@@ -3,9 +3,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import torch.optim as optim
+import sys
+import os
+# 获取当前文件所在目录的父目录（即 project_root）
+project_root = os.path.dirname(os.path.dirname(__file__))
+sys.path.insert(0, project_root)
 
 from model.model_lm import LMmodel, LMConfig
-from model.mydataset import MyDataset
+from model.mydataset import MyDataset_json, MyDataset_bin
+
+
+
 
 lmconfig = LMConfig()
 model = LMmodel(lmconfig)
@@ -20,7 +28,7 @@ optimizer = optim.AdamW(model.parameters(), lr=5e-4, weight_decay=0.01)
 scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000)
 
 # 训练数据
-train_dataset = MyDataset('/home/apulis-dev/userdata/mydata/mobvoi_seq_monkey_general_open_corpus.jsonl', max_length=lmconfig.max_len)
+train_dataset = MyDataset_json('/home/apulis-dev/userdata/mydata/mobvoi_seq_monkey_general_open_corpus.jsonl', max_length=lmconfig.max_len)
 
 # 分割训练集和验证集
 train_dataset, val_dataset = torch.utils.data.random_split(train_dataset, [0.9, 0.1])

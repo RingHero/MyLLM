@@ -6,9 +6,13 @@ from torch.utils.data import DataLoader, DistributedSampler
 import torch.optim as optim
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
+import sys
+import os
 
+project_root = os.path.dirname(os.path.dirname(__file__))
+sys.path.insert(0, project_root)
 from model.model_lm import LMmodel, LMConfig
-from model.mydataset import MyDataset
+from model.mydataset import MyDataset_bin
 
 def train():
     # 从环境变量获取分布式信息
@@ -25,7 +29,7 @@ def train():
     model = LMmodel(lmconfig).to(local_rank)
 
     # 数据集准备
-    dataset = MyDataset('/home/apulis-dev/userdata/mydata/train_data.bin', max_length=lmconfig.max_len)
+    dataset = MyDataset_bin('/home/apulis-dev/userdata/mydata/train_data.bin', max_length=lmconfig.max_len)
     train_subset, val_subset = torch.utils.data.random_split(dataset, [0.9, 0.1])
 
     train_sampler = DistributedSampler(train_subset, num_replicas=world_size, rank=rank, shuffle=True)

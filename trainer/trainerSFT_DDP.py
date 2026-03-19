@@ -8,6 +8,12 @@ import torch.optim as optim
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
+import sys
+import os
+# 获取当前文件所在目录的父目录（即 project_root）
+project_root = os.path.dirname(os.path.dirname(__file__))
+sys.path.insert(0, project_root)
+
 from model.model_lm import LMmodel, LMConfig
 from model.SFTdataset import SFTDataset_csv  # 确保这里用的是处理 -100 掩码的 SFTDataset
 
